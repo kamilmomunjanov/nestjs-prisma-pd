@@ -1,11 +1,28 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+
 import { TaskModule } from './task/task.module';
+import { PrismaModule } from 'nestjs-prisma';
+import { ConfigModule } from '@nestjs/config';
+import { UserModule } from './user/user.module';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { ZodSerializerInterceptor } from 'nestjs-zod';
 
 @Module({
-  imports: [TaskModule],
-  controllers: [AppController],
-  providers: [AppService],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    PrismaModule.forRoot({
+      isGlobal: true,
+    }),
+    UserModule,
+    TaskModule,
+  ],
+  providers: [
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: ZodSerializerInterceptor,
+    }
+  ]
 })
-export class AppModule {}
+export class AppModule { }

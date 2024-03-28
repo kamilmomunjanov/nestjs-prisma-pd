@@ -1,6 +1,7 @@
 import { Injectable, NotAcceptableException } from '@nestjs/common';
-import { TaskDto } from './task.dto';
-import { PrismaService } from 'src/prisma.service';
+import { PrismaService } from 'nestjs-prisma';
+import { CreateTaskDto } from './dto/create-task.dto';
+import { UpdateTaskDto } from './dto/update-user.dto';
 
 @Injectable()
 export class TaskService {
@@ -10,15 +11,20 @@ export class TaskService {
         return this.prisma.task.findMany()
     }
 
-
-
-    create(dto: TaskDto) {
+    create(dto: CreateTaskDto) {
         return this.prisma.task.create({
             data: dto
         })
     }
 
-    async getById(id: string) {
+    update(id: number, dto: UpdateTaskDto) {
+        return this.prisma.task.update({
+            where: { id },
+            data: dto
+        })
+    }
+
+    async getById(id: number) {
         const task = await this.prisma.task.findUnique({
             where: {
                 id: +id
@@ -31,7 +37,7 @@ export class TaskService {
     }
 
 
-    async toggleDone(id: string) {
+    async toggleDone(id: number) {
         const task = await this.getById(id)
 
         return this.prisma.task.update({
