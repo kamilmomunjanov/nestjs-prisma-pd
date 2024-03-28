@@ -4,6 +4,7 @@ import { ZodValidationPipe, patchNestJsSwagger } from 'nestjs-zod';
 import { PrismaClientExceptionFilter } from 'nestjs-prisma';
 import { HttpStatus } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { env } from './env';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -33,8 +34,8 @@ async function bootstrap() {
     P2010: HttpStatus.BAD_REQUEST,
   }));
 
-  await app.listen(process.env.PORT ?? 8000, () => {
-    console.log(`App Started on http://localhost:${process.env.PORT}`)
+  await app.listen(env.PORT, () => {
+    console.log(`App Started on http://localhost:${env.PORT}`)
   });
 }
 bootstrap();
